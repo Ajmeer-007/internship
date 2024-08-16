@@ -1,0 +1,90 @@
+import pickle
+import os
+
+# File to store the to-do list
+TODO_FILE = "todo_list.pkl"
+
+def load_todo_list():
+    """Load the to-do list from a file."""
+    if os.path.exists(TODO_FILE):
+        with open(TODO_FILE, "rb") as file:
+            return pickle.load(file)
+    return []
+
+def save_todo_list(todo_list):
+    """Save the to-do list to a file."""
+    with open(TODO_FILE, "wb") as file:
+        pickle.dump(todo_list, file)
+
+def display_todo_list(todo_list):
+    """Display the to-do list."""
+    if not todo_list:
+        print("The to-do list is empty.")
+    else:
+        for index, task in enumerate(todo_list):
+            status = "Done" if task['completed'] else "Not done"
+            print(f"{index + 1}. {task['description']} [{status}]")
+
+def add_task(todo_list):
+    """Add a new task to the to-do list."""
+    description = input("Enter the task description: ")
+    todo_list.append({'description': description, 'completed': False})
+    print("Task added.")
+
+def mark_task_complete(todo_list):
+    """Mark a task as completed."""
+    display_todo_list(todo_list)
+    try:
+        index = int(input("Enter the number of the task to mark as complete: ")) - 1
+        if 0 <= index < len(todo_list):
+            todo_list[index]['completed'] = True
+            print("Task marked as complete.")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+def remove_task(todo_list):
+    """Remove a task from the to-do list."""
+    display_todo_list(todo_list)
+    try:
+        index = int(input("Enter the number of the task to remove: ")) - 1
+        if 0 <= index < len(todo_list):
+            todo_list.pop(index)
+            print("Task removed.")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+def main():
+    """Main function to run the to-do list application."""
+    todo_list = load_todo_list()
+    
+    while True:
+        print("\nTo-Do List Menu:")
+        print("1. View To-Do List")
+        print("2. Add Task")
+        print("3. Mark Task Complete")
+        print("4. Remove Task")
+        print("5. Exit")
+        
+        choice = input("Enter your choice: ")
+        
+        if choice == '1':
+            display_todo_list(todo_list)
+        elif choice == '2':
+            add_task(todo_list)
+        elif choice == '3':
+            mark_task_complete(todo_list)
+        elif choice == '4':
+            remove_task(todo_list)
+        elif choice == '5':
+            save_todo_list(todo_list)
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 5.")
+
+if __name__ == "__main__":
+    main()
